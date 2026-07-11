@@ -7,10 +7,6 @@ def csv_to_db():
     connection = sqlite3.connect('NQ_Futures.db')
 
     df.rename(columns={'timestamp ET': 'timestampET'}, inplace=True)
-    print(len(df['timestampET']))
-    print(df['timestampET'].nunique())
-
-    print(type(df['timestampET'][3]))
 
     df.set_index('timestampET', inplace=True)
 
@@ -29,6 +25,7 @@ def csv_to_db():
                        Vwap_ETH    REAL
                    );
                    ''')
+
     for row in df.itertuples():
         cursor.execute('''
                 INSERT OR REPLACE INTO NQ_1m (timestampET, open, high, low, close, volume, Vwap_RTH, Vwap_ETH) VALUES (?, ?, ?, ?, ?, ?, ?, ?)''',
