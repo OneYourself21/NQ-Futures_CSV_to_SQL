@@ -1,0 +1,10 @@
+#python cache
+__pycache__/
+#pycharm IDE stuff
+.idea/
+
+#kaggle data
+Dataset_NQ_1min_2022_2025.csv
+
+#db
+NQ_Futures.db
