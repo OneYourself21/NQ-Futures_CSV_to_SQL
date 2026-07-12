@@ -8,6 +8,9 @@ def csv_to_db():
 
     df.rename(columns={'timestamp ET': 'timestampET'}, inplace=True)
 
+    df['timestampET'] = pd.to_datetime(df['timestampET']) #converts M/D/Y Hour:Mins to a date time object
+    df['timestampET'] = df['timestampET'].dt.strftime('%Y-%m-%d %H:%M:%S') #back to string :D
+
     df.set_index('timestampET', inplace=True)
 
     cursor = connection.cursor()
