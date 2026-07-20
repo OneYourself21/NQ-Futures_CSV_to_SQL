@@ -14,6 +14,10 @@ To check yourself the hour_count_test has been saved.
 Otherwise, amount of candles in each hour is mostly the same with a few slight negligible differences.
 
 
+There are huge jumps after overnight session implying large moves do occur outside of intraday which may make it harder to beat buy and hold with these futures.
+To see jumps use the find_jumps(size_of_jump) where the size_of_jump is the size of the difference between two candles. (lots of huge differences)
+
+
 We expect if there is not 17:00 candles that we will have 1380 candles per trading day. (from 18:00→17:00).
 Running candles_per_day_test we find that 640 days out of 3 years do but not all do. a dict for number of candles a day and their relative frequency shall be posted below.
 

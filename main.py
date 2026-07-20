@@ -1,6 +1,7 @@
 import sqlite3
 import datetime as dt
 import pandas as pd
+import matplotlib.pyplot as plt
 
 #timestampET = 0
 #open = 1
@@ -153,5 +154,58 @@ def holidays() -> list:
     connection.close()
     return rows
 
+
+def find_jumps(diff : int) -> list:
+    connection = sqlite3.connect('NQ_Futures.db')
+    cursor = connection.cursor()
+
+    cursor.execute(''' SELECT close, sub.next_open, timestampET, sub.next_timestampET
+                       FROM (SELECT timestampET,
+                                    close,
+                                    LEAD(timestampET) OVER (ORDER BY timestampET) AS next_timestampET,
+                                    LEAD(open) OVER (ORDER BY timestampET) AS next_open
+                           FROM NQ_1m
+                            ) sub
+                       WHERE (sub.close + ? < sub.next_open) OR (sub.close - ? > sub.next_open);
+                       ''', (diff, diff,))
+
+
+
+    rows = cursor.fetchall()
+    print(rows)
+    print(len(rows))
+    connection.close()
+    return rows
+
+
+def plot_rolling_period() -> None:
+    connection = sqlite3.connect('NQ_Futures.db')
+    cursor = connection.cursor()
+    cursor.execute(''' SELECT timestampET, open, close, volume
+                       FROM NQ_1m
+                       WHERE strftime('%Y/%m', timestampET) == '2023/03';
+                   ''')
+
+    rows = cursor.fetchall()
+    connection.close()
+    timestampET, open, close, volume = [],[],[],[]
+
+    for row in rows:
+        timestampET.append(row[0])
+        open.append(row[1])
+        close.append(row[2])
+        volume.append(row[3])
+
+    fig, ax = plt.subplots()
+
+    ax.plot(timestampET, open, label = 'open')
+    ax.plot(timestampET, close, label = 'close')
+    ax.plot(timestampET, volume, label = 'volume')
+    print(close)
+    plt.show()
+    connection.close()
+
+
+
 if __name__ == '__main__':
-    test_a_day(930)
+    plot_rolling_period()
